@@ -7,14 +7,14 @@
 [![Celery](https://img.shields.io/badge/celery-async--tasks-37814A.svg)](https://docs.celeryq.dev/)
 [![MinIO](https://img.shields.io/badge/minio-s3--storage-c72c48.svg)](https://min.io/)
 [![Tests](https://img.shields.io/badge/newman--tests-233%20passed-brightgreen.svg)](https://github.com/zakski-bit/dicoevent-rest-api)
-[![Live Showcase](https://img.shields.io/badge/vercel-live--showcase-black.svg)](https://dicoevent-rest-api.vercel.app/)
+[![Live Showcase](https://img.shields.io/badge/vercel-live--showcase-black.svg)](https://dicoevent.vercel.app/)
 
 RESTful API backend untuk platform manajemen event **DicoEvent (Versi 2)** oleh startup **DicoTech**, dibangun menggunakan **Python 3.10** dan **Django 4.2 LTS**.
 
 Proyek ini telah memenuhi seluruh kriteria penilaian tingkat lanjut (**Tingkat Lanjut / Advanced - 4 Points** pada setiap kriteria, total **Bintang 5 / Nilai 4.0**).
 
 > 🌐 **Live Interactive Showcase (Vercel)**:
-> Halaman demo interaktif dan simulasi API live dapat diakses di: **[Live Showcase Demo](https://dicoevent-rest-api.vercel.app/)** *(atau domain Vercel Anda)*.
+> Halaman demo interaktif dan simulasi API live dapat diakses di: **[Live Showcase Demo](https://dicoevent.vercel.app/)**.
 > *Catatan: Versi Vercel berfungsi sebagai interactive UI showcase & API preview documentation (tanpa live database backend). Layanan backend penuh dengan PostgreSQL, Redis, dan Celery Worker dijalankan di lokal/VPS melalui Docker Compose.*
 
 ---
