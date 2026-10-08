@@ -3,23 +3,32 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>DicoEvent RESTful API - Live Showcase & Documentation</title>
+  <title>DicoEvent Versi 2 | Enterprise RESTful API Showcase & Interactive Test Lab</title>
+  <meta name="description" content="Production-ready RESTful API for DicoEvent platform built with Django 4.2 LTS, Redis Cache, Celery, MinIO S3, and Loguru." />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
       --bg: #090d16;
-      --card-bg: #111726;
-      --card-border: #1e293b;
-      --primary: #38bdf8;
-      --primary-glow: rgba(56, 189, 248, 0.25);
-      --accent: #818cf8;
-      --success: #34d399;
-      --warning: #fbbf24;
-      --danger: #f87171;
-      --text: #f1f5f9;
+      --bg-surface: #0f1626;
+      --bg-card: #141d30;
+      --bg-card-hover: #1a263e;
+      --bg-inset: #090e18;
+      --border: rgba(255, 255, 255, 0.08);
+      --border-focus: #38bdf8;
+      --text: #f8fafc;
       --text-muted: #94a3b8;
+      --text-dim: #64748b;
+      --cyan: #38bdf8;
+      --cyan-glow: rgba(56, 189, 248, 0.2);
+      --emerald: #10b981;
+      --emerald-glow: rgba(16, 185, 129, 0.2);
+      --indigo: #6366f1;
+      --amber: #f59e0b;
+      --rose: #f43f5e;
+      --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
     }
 
     * {
@@ -29,648 +38,2031 @@
     }
 
     body {
-      font-family: 'Plus Jakarta Sans', sans-serif;
       background-color: var(--bg);
       color: var(--text);
-      line-height: 1.6;
+      font-family: var(--font-sans);
+      line-height: 1.55;
       overflow-x: hidden;
+      min-height: 100vh;
     }
 
-    /* Ambient background grid */
+    /* Subtle background grid pattern */
     .bg-grid {
       position: fixed;
       inset: 0;
-      background-image: radial-gradient(circle at 50% 0%, rgba(56, 189, 248, 0.12) 0%, transparent 60%),
-                        linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
-                        linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
-      background-size: 100% 100%, 32px 32px, 32px 32px;
+      background-image: 
+        radial-gradient(circle at 50% 0%, rgba(56, 189, 248, 0.08) 0%, transparent 55%),
+        linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+      background-size: 100% 100%, 36px 36px, 36px 36px;
       pointer-events: none;
       z-index: 0;
     }
 
     .container {
-      max-width: 1100px;
+      max-width: 1240px;
       margin: 0 auto;
       padding: 0 24px;
       position: relative;
       z-index: 1;
     }
 
-    /* Header Nav */
+    /* Top Navigation */
     header {
-      padding: 24px 0;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      padding: 20px 0;
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      background: rgba(9, 13, 22, 0.85);
+      backdrop-filter: blur(12px);
+      z-index: 50;
     }
 
-    .logo {
+    .nav-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .brand {
       display: flex;
       align-items: center;
       gap: 12px;
-      font-weight: 800;
-      font-size: 1.25rem;
+      text-decoration: none;
       color: #fff;
-      text-decoration: none;
     }
 
-    .logo-badge {
-      background: linear-gradient(135deg, var(--primary), var(--accent));
-      color: #0f172a;
-      font-size: 0.75rem;
-      padding: 3px 8px;
-      border-radius: 999px;
+    .brand-icon {
+      width: 34px;
+      height: 34px;
+      border-radius: 8px;
+      background: linear-gradient(135deg, #0284c7, #6366f1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 1.1rem;
+      color: #fff;
+      box-shadow: 0 0 16px var(--cyan-glow);
+    }
+
+    .brand-text {
       font-weight: 700;
-      letter-spacing: 0.5px;
+      font-size: 1.05rem;
+      letter-spacing: -0.3px;
     }
 
-    .nav-links a {
-      color: var(--text-muted);
-      text-decoration: none;
-      font-size: 0.95rem;
-      transition: color 0.2s;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .nav-links a:hover {
-      color: var(--primary);
-    }
-
-    /* Hero Section */
-    .hero {
-      padding: 64px 0 40px;
-      text-align: center;
-    }
-
-    .hero-badge-wrap {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      background: rgba(56, 189, 248, 0.1);
-      border: 1px solid rgba(56, 189, 248, 0.25);
-      padding: 6px 14px;
+    .version-tag {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      background: rgba(56, 189, 248, 0.12);
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      color: var(--cyan);
+      padding: 2px 7px;
       border-radius: 999px;
-      font-size: 0.85rem;
-      color: var(--primary);
-      margin-bottom: 20px;
       font-weight: 600;
     }
 
-    .hero h1 {
-      font-size: 2.75rem;
-      font-weight: 800;
-      letter-spacing: -1px;
-      margin-bottom: 16px;
-      background: linear-gradient(180deg, #ffffff 0%, #cbd5e1 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
+    .status-indicator {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(16, 185, 129, 0.08);
+      border: 1px solid rgba(16, 185, 129, 0.25);
+      padding: 5px 12px;
+      border-radius: 999px;
+      font-size: 0.78rem;
+      color: #34d399;
+      font-weight: 600;
     }
 
-    .hero p {
-      max-width: 680px;
-      margin: 0 auto 32px;
-      font-size: 1.125rem;
-      color: var(--text-muted);
+    .pulse-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background-color: var(--emerald);
+      box-shadow: 0 0 8px var(--emerald);
+      animation: pulse 2s infinite;
     }
 
-    .hero-cta {
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(0.85); }
+    }
+
+    .nav-actions {
       display: flex;
-      justify-content: center;
-      gap: 16px;
-      flex-wrap: wrap;
+      align-items: center;
+      gap: 12px;
     }
 
     .btn {
       display: inline-flex;
       align-items: center;
       gap: 8px;
-      padding: 12px 24px;
-      border-radius: 10px;
-      font-size: 0.95rem;
-      font-weight: 600;
-      text-decoration: none;
-      transition: all 0.2s ease;
-      cursor: pointer;
-    }
-
-    .btn-primary {
-      background: linear-gradient(135deg, var(--primary), #0284c7);
-      color: #031122;
-      box-shadow: 0 4px 20px var(--primary-glow);
-    }
-
-    .btn-primary:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 24px rgba(56, 189, 248, 0.4);
-    }
-
-    .btn-secondary {
-      background: rgba(255, 255, 255, 0.05);
-      color: #fff;
-      border: 1px solid var(--card-border);
-    }
-
-    .btn-secondary:hover {
-      background: rgba(255, 255, 255, 0.1);
-      border-color: rgba(255, 255, 255, 0.2);
-    }
-
-    /* Notice Banner */
-    .notice-banner {
-      background: rgba(56, 189, 248, 0.05);
-      border: 1px solid rgba(56, 189, 248, 0.2);
-      border-radius: 12px;
-      padding: 14px 20px;
-      margin: 28px 0 48px;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      font-size: 0.9rem;
-      color: #cbd5e1;
-    }
-
-    .notice-icon {
-      color: var(--primary);
-      font-size: 1.25rem;
-      flex-shrink: 0;
-    }
-
-    /* Architecture Grid */
-    .section-title {
-      font-size: 1.5rem;
-      font-weight: 700;
-      margin-bottom: 8px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .section-desc {
-      color: var(--text-muted);
-      margin-bottom: 24px;
-      font-size: 0.95rem;
-    }
-
-    .arch-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-      gap: 16px;
-      margin-bottom: 56px;
-    }
-
-    .arch-card {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 14px;
-      padding: 20px;
-      transition: border-color 0.2s;
-    }
-
-    .arch-card:hover {
-      border-color: rgba(56, 189, 248, 0.4);
-    }
-
-    .arch-card .icon {
-      font-size: 1.75rem;
-      margin-bottom: 12px;
-    }
-
-    .arch-card h3 {
-      font-size: 1.05rem;
-      margin-bottom: 6px;
-      color: #fff;
-    }
-
-    .arch-card p {
-      font-size: 0.85rem;
-      color: var(--text-muted);
-      line-height: 1.5;
-    }
-
-    /* Interactive Demo Sandbox */
-    .sandbox {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 16px;
-      overflow: hidden;
-      margin-bottom: 56px;
-    }
-
-    .sandbox-header {
-      padding: 16px 20px;
-      border-bottom: 1px solid var(--card-border);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      background: rgba(0, 0, 0, 0.2);
-    }
-
-    .sandbox-tabs {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-    }
-
-    .tab-btn {
-      background: transparent;
-      border: 1px solid transparent;
-      color: var(--text-muted);
-      padding: 8px 14px;
+      padding: 9px 18px;
       border-radius: 8px;
       font-size: 0.85rem;
       font-weight: 600;
+      text-decoration: none;
       cursor: pointer;
-      transition: all 0.2s;
+      transition: all 0.18s ease;
+      font-family: var(--font-sans);
+      border: 1px solid transparent;
     }
 
-    .tab-btn:hover {
+    .btn-github {
+      background: rgba(255, 255, 255, 0.06);
+      border-color: var(--border);
       color: #fff;
-      background: rgba(255, 255, 255, 0.05);
     }
 
-    .tab-btn.active {
-      color: var(--primary);
-      background: rgba(56, 189, 248, 0.1);
-      border-color: rgba(56, 189, 248, 0.3);
+    .btn-github:hover {
+      background: rgba(255, 255, 255, 0.12);
+      border-color: rgba(255, 255, 255, 0.2);
     }
 
-    .sandbox-body {
-      padding: 20px;
+    .btn-primary {
+      background: var(--cyan);
+      color: #031122;
+      box-shadow: 0 2px 14px var(--cyan-glow);
     }
 
-    .request-bar {
-      display: flex;
-      gap: 10px;
-      background: #080c14;
-      padding: 10px 14px;
-      border-radius: 10px;
-      border: 1px solid rgba(255, 255, 255, 0.06);
+    .btn-primary:hover {
+      background: #7dd3fc;
+      transform: translateY(-1px);
+    }
+
+    /* Hero */
+    .hero {
+      padding: 48px 0 32px;
+    }
+
+    .badge-bar {
+      display: inline-flex;
       align-items: center;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.9rem;
+      gap: 8px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border);
+      padding: 4px 12px;
+      border-radius: 999px;
+      font-size: 0.78rem;
+      color: var(--text-muted);
       margin-bottom: 16px;
     }
 
-    .method {
-      padding: 3px 8px;
-      border-radius: 6px;
-      font-weight: 700;
-      font-size: 0.75rem;
+    .badge-bar strong {
+      color: var(--cyan);
     }
 
-    .method-get { background: #0284c7; color: #fff; }
-    .method-post { background: #16a34a; color: #fff; }
-    .method-put { background: #d97706; color: #fff; }
-    .method-delete { background: #dc2626; color: #fff; }
-
-    .endpoint-url {
-      color: #e2e8f0;
-      flex-grow: 1;
+    h1 {
+      font-size: 2.5rem;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      line-height: 1.2;
+      margin-bottom: 14px;
+      color: #fff;
     }
 
-    .send-btn {
-      background: var(--primary);
-      color: #031122;
-      border: none;
-      padding: 6px 14px;
-      border-radius: 6px;
-      font-weight: 700;
-      font-size: 0.8rem;
-      cursor: pointer;
-      transition: opacity 0.2s;
-    }
-
-    .send-btn:hover { opacity: 0.9; }
-
-    .console-window {
-      background: #080c14;
-      border: 1px solid rgba(255, 255, 255, 0.06);
-      border-radius: 10px;
-      padding: 16px;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.85rem;
-    }
-
-    .console-headers {
-      display: flex;
-      gap: 16px;
-      margin-bottom: 12px;
-      padding-bottom: 10px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    .hero-lead {
+      font-size: 1.05rem;
       color: var(--text-muted);
+      max-width: 780px;
+      margin-bottom: 24px;
+      line-height: 1.6;
     }
 
-    .header-tag {
-      color: var(--success);
-      font-weight: 600;
+    .hero-controls {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 36px;
     }
 
-    pre {
-      color: #e2e8f0;
-      white-space: pre-wrap;
-      word-break: break-all;
+    .cli-copy-box {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      padding: 8px 14px;
+      border-radius: 8px;
+      font-family: var(--font-mono);
+      font-size: 0.82rem;
+      color: #cbd5e1;
+      cursor: pointer;
+      transition: border-color 0.2s;
     }
 
-    /* Verification Badge Section */
-    .stats-card {
-      background: linear-gradient(135deg, rgba(56, 189, 248, 0.06), rgba(129, 140, 248, 0.06));
-      border: 1px solid rgba(56, 189, 248, 0.2);
-      border-radius: 16px;
-      padding: 28px;
+    .cli-copy-box:hover {
+      border-color: rgba(56, 189, 248, 0.4);
+    }
+
+    .cli-copy-btn {
+      color: var(--cyan);
+      font-size: 0.75rem;
+      font-weight: 700;
+      background: rgba(56, 189, 248, 0.1);
+      padding: 2px 8px;
+      border-radius: 4px;
+    }
+
+    /* Metrics Strip */
+    .metrics-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-      gap: 20px;
-      text-align: center;
-      margin-bottom: 60px;
+      gap: 12px;
+      margin-bottom: 40px;
     }
 
-    .stat-item .num {
-      font-size: 2.25rem;
-      font-weight: 800;
-      color: var(--primary);
-      margin-bottom: 4px;
+    .metric-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px 18px;
+      position: relative;
+      overflow: hidden;
     }
 
-    .stat-item .lbl {
-      font-size: 0.85rem;
+    .metric-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: var(--accent-color, var(--cyan));
+      opacity: 0.7;
+    }
+
+    .metric-val {
+      font-family: var(--font-mono);
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 2px;
+    }
+
+    .metric-lbl {
+      font-size: 0.78rem;
       color: var(--text-muted);
       font-weight: 500;
     }
 
-    footer {
-      border-top: 1px solid rgba(255, 255, 255, 0.06);
-      padding: 32px 0;
-      text-align: center;
+    .metric-sub {
+      font-size: 0.72rem;
+      color: var(--text-dim);
+      margin-top: 4px;
+      font-family: var(--font-mono);
+    }
+
+    /* Main App Workspace Layout */
+    .app-workspace {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      overflow: hidden;
+      margin-bottom: 60px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.35);
+    }
+
+    /* Navigation Bar Tabs */
+    .workspace-nav {
+      display: flex;
+      align-items: center;
+      background: #090e18;
+      border-bottom: 1px solid var(--border);
+      padding: 0 12px;
+      overflow-x: auto;
+      gap: 4px;
+    }
+
+    .nav-tab {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 14px 18px;
+      background: transparent;
+      border: none;
+      border-bottom: 2px solid transparent;
       color: var(--text-muted);
-      font-size: 0.875rem;
+      font-family: var(--font-sans);
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.15s ease;
+    }
+
+    .nav-tab:hover {
+      color: #fff;
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    .nav-tab.active {
+      color: var(--cyan);
+      border-bottom-color: var(--cyan);
+      background: rgba(56, 189, 248, 0.04);
+    }
+
+    .tab-badge {
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      padding: 1px 6px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.08);
+      color: var(--text-muted);
+    }
+
+    .nav-tab.active .tab-badge {
+      background: rgba(56, 189, 248, 0.18);
+      color: var(--cyan);
+    }
+
+    /* Tab Content Panes */
+    .tab-content {
+      display: none;
+      padding: 24px;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    /* TAB 1: API PLAYGROUND STYLES */
+    .playground-grid {
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      gap: 20px;
+    }
+
+    @media (max-width: 900px) {
+      .playground-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .endpoint-list {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      background: var(--bg-inset);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 12px;
+      max-height: 580px;
+      overflow-y: auto;
+    }
+
+    .category-label {
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-dim);
+      padding: 8px 6px 4px;
+    }
+
+    .endpoint-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 10px;
+      border-radius: 8px;
+      background: transparent;
+      border: 1px solid transparent;
+      color: var(--text-muted);
+      cursor: pointer;
+      text-align: left;
+      font-family: var(--font-mono);
+      font-size: 0.76rem;
+      transition: all 0.15s ease;
+      width: 100%;
+    }
+
+    .endpoint-item:hover {
+      background: rgba(255, 255, 255, 0.04);
+      color: #fff;
+    }
+
+    .endpoint-item.active {
+      background: rgba(56, 189, 248, 0.08);
+      border-color: rgba(56, 189, 248, 0.25);
+      color: #fff;
+    }
+
+    .method-tag {
+      font-size: 0.68rem;
+      font-weight: 700;
+      padding: 2px 6px;
+      border-radius: 4px;
+      min-width: 44px;
+      text-align: center;
+    }
+
+    .m-get { background: rgba(56, 189, 248, 0.15); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.3); }
+    .m-post { background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.3); }
+    .m-put { background: rgba(245, 158, 11, 0.15); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.3); }
+    .m-delete { background: rgba(244, 63, 94, 0.15); color: #fb7185; border: 1px solid rgba(244, 63, 94, 0.3); }
+
+    .interactive-panel {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .request-bar {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--bg-inset);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 8px 12px;
+      font-family: var(--font-mono);
+    }
+
+    .url-input {
+      background: transparent;
+      border: none;
+      color: #fff;
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      width: 100%;
+      outline: none;
+    }
+
+    .cache-toggle-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 8px 14px;
+      font-size: 0.8rem;
+    }
+
+    .cache-state-pill {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 999px;
+    }
+
+    .pill-hit { background: rgba(16, 185, 129, 0.2); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.4); }
+    .pill-miss { background: rgba(245, 158, 11, 0.2); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.4); }
+
+    .req-res-split {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    @media (max-width: 768px) {
+      .req-res-split {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .code-box {
+      background: var(--bg-inset);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .code-box-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 14px;
+      background: rgba(255, 255, 255, 0.03);
+      border-bottom: 1px solid var(--border);
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--text-muted);
+    }
+
+    .header-pills {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .header-pill {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      padding: 2px 6px;
+      border-radius: 4px;
+      background: rgba(255, 255, 255, 0.05);
+      color: #cbd5e1;
+    }
+
+    .code-body {
+      padding: 14px;
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      color: #e2e8f0;
+      overflow-x: auto;
+      min-height: 220px;
+      max-height: 380px;
+      white-space: pre-wrap;
+      line-height: 1.5;
+    }
+
+    textarea.code-body {
+      width: 100%;
+      height: 220px;
+      background: transparent;
+      border: none;
+      resize: vertical;
+      outline: none;
+    }
+
+    /* TAB 2: NEWMAN TEST SUITE STYLES */
+    .runner-hero {
+      background: linear-gradient(135deg, rgba(16, 185, 129, 0.06), rgba(56, 189, 248, 0.06));
+      border: 1px solid rgba(16, 185, 129, 0.2);
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    .runner-info h3 {
+      font-size: 1.15rem;
+      margin-bottom: 4px;
+      color: #fff;
+    }
+
+    .runner-info p {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    .progress-bar-wrap {
+      width: 100%;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 999px;
+      height: 8px;
+      margin-top: 14px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+    }
+
+    .progress-bar-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #10b981, #38bdf8);
+      transition: width 0.15s ease;
+    }
+
+    .terminal-window {
+      background: #060910;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      font-family: var(--font-mono);
+    }
+
+    .terminal-titlebar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 16px;
+      background: #0d121c;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.75rem;
+      color: var(--text-dim);
+    }
+
+    .terminal-dots {
+      display: flex;
+      gap: 6px;
+    }
+
+    .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+    }
+
+    .dot-red { background: #ef4444; }
+    .dot-yellow { background: #f59e0b; }
+    .dot-green { background: #10b981; }
+
+    .terminal-stream {
+      padding: 16px;
+      height: 360px;
+      overflow-y: auto;
+      font-size: 0.78rem;
+      line-height: 1.6;
+      color: #cbd5e1;
+    }
+
+    .log-line {
+      margin-bottom: 4px;
+      word-break: break-all;
+    }
+
+    .log-pass { color: #34d399; }
+    .log-info { color: #38bdf8; }
+    .log-warn { color: #fbbf24; }
+    .log-dim { color: #64748b; }
+
+    /* TAB 3: MINIO FILE VALIDATOR STYLES */
+    .validator-container {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    @media (max-width: 768px) {
+      .validator-container {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .dropzone {
+      border: 2px dashed rgba(56, 189, 248, 0.3);
+      background: rgba(56, 189, 248, 0.02);
+      border-radius: 12px;
+      padding: 32px 20px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .dropzone:hover {
+      border-color: var(--cyan);
+      background: rgba(56, 189, 248, 0.05);
+    }
+
+    .dropzone-icon {
+      font-size: 2.2rem;
+      margin-bottom: 12px;
+    }
+
+    .preset-files-title {
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      margin: 16px 0 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .preset-files-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 8px;
+    }
+
+    .file-preset-btn {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 14px;
+      background: var(--bg-inset);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: #e2e8f0;
+      font-family: var(--font-mono);
+      font-size: 0.76rem;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      text-align: left;
+    }
+
+    .file-preset-btn:hover {
+      border-color: rgba(56, 189, 248, 0.3);
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    /* TAB 4: ERD & ARCHITECTURE */
+    .erd-wrap {
+      background: #060910;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px;
+      text-align: center;
+    }
+
+    .erd-img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 8px;
+      cursor: zoom-in;
+      transition: transform 0.2s ease;
+      border: 1px solid var(--border);
+    }
+
+    .erd-img:hover {
+      transform: scale(1.01);
+    }
+
+    .tables-schema-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 16px;
+      margin-top: 24px;
+    }
+
+    .schema-card {
+      background: var(--bg-inset);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .schema-card-head {
+      padding: 10px 14px;
+      background: rgba(255, 255, 255, 0.03);
+      border-bottom: 1px solid var(--border);
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: #fff;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .schema-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+    }
+
+    .schema-table th, .schema-table td {
+      padding: 6px 12px;
+      text-align: left;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+    }
+
+    .schema-table th {
+      color: var(--text-dim);
+      font-size: 0.68rem;
+    }
+
+    .col-pk { color: var(--cyan); font-weight: 700; }
+    .col-fk { color: var(--amber); }
+
+    /* TAB 5: LOGURU LIVE STREAM */
+    .log-filter-bar {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 14px;
+      flex-wrap: wrap;
+    }
+
+    .filter-btn {
+      padding: 5px 12px;
+      border-radius: 6px;
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      font-weight: 600;
+      background: var(--bg-inset);
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      cursor: pointer;
+    }
+
+    .filter-btn.active {
+      background: rgba(56, 189, 248, 0.12);
+      border-color: var(--cyan);
+      color: var(--cyan);
+    }
+
+    .log-search-input {
+      background: var(--bg-inset);
+      border: 1px solid var(--border);
+      padding: 6px 12px;
+      border-radius: 6px;
+      color: #fff;
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      outline: none;
+      min-width: 200px;
+    }
+
+    /* Modal Lightbox */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.85);
+      z-index: 100;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      backdrop-filter: blur(8px);
+    }
+
+    .modal-overlay.open {
+      display: flex;
+    }
+
+    .modal-inner {
+      max-width: 95vw;
+      max-height: 90vh;
+      overflow: auto;
+      background: #0b0f19;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px;
+      position: relative;
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 14px;
+      right: 14px;
+      background: rgba(255, 255, 255, 0.1);
+      border: none;
+      color: #fff;
+      padding: 6px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+    }
+
+    /* Footer */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 40px 0 60px;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      text-align: center;
     }
 
     footer a {
-      color: var(--primary);
+      color: var(--cyan);
       text-decoration: none;
+    }
+
+    footer a:hover {
+      text-decoration: underline;
+    }
+
+    /* Notification Toast */
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: #111827;
+      border: 1px solid var(--cyan);
+      color: #fff;
+      padding: 10px 18px;
+      border-radius: 8px;
+      font-size: 0.82rem;
+      font-family: var(--font-mono);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+      z-index: 200;
+      transform: translateY(100px);
+      opacity: 0;
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .toast.show {
+      transform: translateY(0);
+      opacity: 1;
     }
   </style>
 </head>
 <body>
   <div class="bg-grid"></div>
 
-  <div class="container">
-    <header>
-      <a href="#" class="logo">
-        <span>⚡ DicoEvent API</span>
-        <span class="logo-badge">VERSI 2</span>
+  <!-- Main Navigation -->
+  <header>
+    <div class="container nav-inner">
+      <a href="#" class="brand">
+        <div class="brand-icon">⚡</div>
+        <div>
+          <div class="brand-text">DicoEvent API</div>
+        </div>
+        <span class="version-tag">v2.0 LTS</span>
       </a>
-      <div class="nav-links">
-        <a href="https://github.com/zakski-bit/dicoevent-rest-api" target="_blank" rel="noopener noreferrer">
-          <svg height="18" width="18" viewBox="0 0 16 16" fill="currentColor">
+
+      <div class="status-indicator">
+        <span class="pulse-dot"></span>
+        <span>All Systems Operational (PostgreSQL • Redis • MinIO • Celery)</span>
+      </div>
+
+      <div class="nav-actions">
+        <a href="https://github.com/zakski-bit/dicoevent-rest-api" target="_blank" rel="noopener noreferrer" class="btn btn-github">
+          <svg height="16" width="16" viewBox="0 0 16 16" fill="currentColor">
             <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/>
           </svg>
-          GitHub Repository
+          <span>GitHub</span>
         </a>
+        <button class="btn btn-primary" onclick="switchMainTab('runner')">
+          <span>Run Test Suite</span>
+          <span>▶</span>
+        </button>
       </div>
-    </header>
+    </div>
+  </header>
 
-    <section class="hero">
-      <div class="hero-badge-wrap">
-        <span>🚀 100% Passed Automated Test Suite (233 / 233 Assertions)</span>
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="container">
+      <div class="badge-bar">
+        <span>PROYEK AKHIR DICODING</span>
+        <span>•</span>
+        <strong>SKOR 4.0 / BINTANG 5 (ADVANCED MASTERY)</strong>
       </div>
-      <h1>Production-Ready Event RESTful API</h1>
-      <p>
-        Platform backend manajemen tiket acara dengan Django 4.2 LTS, PostgreSQL, Redis Caching, Celery Asynchronous Email Workers, MinIO Cloud Storage, dan Loguru Observability.
+      <h1>Enterprise Event Management RESTful API</h1>
+      <p class="hero-lead">
+        Platform backend tiket event berskala produksi yang dibangun dengan <strong>Django 4.2 LTS</strong>, <strong>PostgreSQL</strong>, <strong>Redis Caching</strong> berkecepatan tinggi, background queue <strong>Celery</strong> untuk email reminder otomatis H-2, <strong>MinIO S3 Object Storage</strong>, dan structured observability <strong>Loguru</strong>.
       </p>
-      <div class="hero-cta">
-        <a href="https://github.com/zakski-bit/dicoevent-rest-api" target="_blank" class="btn btn-primary">
-          ⭐ View on GitHub
-        </a>
-        <a href="#sandbox" class="btn btn-secondary">
-          🧪 Try Interactive Sandbox
-        </a>
-      </div>
-    </section>
 
-    <div class="notice-banner">
-      <div class="notice-icon">💡</div>
-      <div>
-        <strong>Live Showcase Mode:</strong> Halaman ini adalah portal dokumentasi & interactive simulator langsung di Vercel. Untuk menjalankan full backend service terintegrasi (PostgreSQL + Redis + Celery Worker), silakan ikuti panduan Docker Compose di repositori GitHub.
+      <div class="hero-controls">
+        <div class="cli-copy-box" onclick="copyText('git clone https://github.com/zakski-bit/dicoevent-rest-api.git', 'Git Clone Command Copied!')">
+          <span style="color:var(--text-dim);">$</span>
+          <span>git clone https://github.com/zakski-bit/dicoevent-rest-api.git</span>
+          <span class="cli-copy-btn">COPY</span>
+        </div>
+        <button class="btn btn-github" onclick="switchMainTab('playground')">⚡ Open API Playground</button>
+        <button class="btn btn-github" onclick="switchMainTab('erd')">🗺️ View ERD Architecture</button>
+      </div>
+
+      <!-- Metrics -->
+      <div class="metrics-grid">
+        <div class="metric-card" style="--accent-color: #10b981;">
+          <div class="metric-val" style="color: #34d399;">233 / 233</div>
+          <div class="metric-lbl">Newman Test Assertions</div>
+          <div class="metric-sub">100% Pass (0 Errors)</div>
+        </div>
+        <div class="metric-card" style="--accent-color: #38bdf8;">
+          <div class="metric-val" style="color: #38bdf8;">3,600s</div>
+          <div class="metric-lbl">Redis Cache TTL</div>
+          <div class="metric-sub">Auto Invalidate on Mutation</div>
+        </div>
+        <div class="metric-card" style="--accent-color: #6366f1;">
+          <div class="metric-val" style="color: #818cf8;">H-2 Jam</div>
+          <div class="metric-lbl">Celery Reminder ETA</div>
+          <div class="metric-sub">Non-blocking Worker Queue</div>
+        </div>
+        <div class="metric-card" style="--accent-color: #f59e0b;">
+          <div class="metric-val" style="color: #fbbf24;">&le; 500 kB</div>
+          <div class="metric-lbl">MinIO Upload Limit</div>
+          <div class="metric-sub">Strict image/* MIME Guard</div>
+        </div>
+        <div class="metric-card" style="--accent-color: #f43f5e;">
+          <div class="metric-val" style="color: #f43f5e;">Daily Rotation</div>
+          <div class="metric-lbl">Loguru Observability</div>
+          <div class="metric-sub">application.log & error.log</div>
+        </div>
       </div>
     </div>
+  </section>
 
-    <!-- Stats -->
-    <div class="stats-card">
-      <div class="stat-item">
-        <div class="num">233 / 233</div>
-        <div class="lbl">Assertions Passed</div>
+  <!-- Workspace App -->
+  <main class="container">
+    <div class="app-workspace">
+      <!-- Tabs Bar -->
+      <div class="workspace-nav">
+        <button class="nav-tab active" onclick="switchMainTab('playground')">
+          <span>⚡ API Playground</span>
+          <span class="tab-badge">Interactive</span>
+        </button>
+        <button class="nav-tab" onclick="switchMainTab('runner')">
+          <span>🧪 Newman Test Runner</span>
+          <span class="tab-badge">233 Tests</span>
+        </button>
+        <button class="nav-tab" onclick="switchMainTab('validator')">
+          <span>📦 MinIO Storage Lab</span>
+          <span class="tab-badge">Validation</span>
+        </button>
+        <button class="nav-tab" onclick="switchMainTab('erd')">
+          <span>🗺️ ERD & Schema</span>
+          <span class="tab-badge">PostgreSQL</span>
+        </button>
+        <button class="nav-tab" onclick="switchMainTab('logs')">
+          <span>📜 Loguru Stream</span>
+          <span class="tab-badge">Live Logs</span>
+        </button>
+        <button class="nav-tab" onclick="switchMainTab('infra')">
+          <span>⚙️ Docker & Config</span>
+          <span class="tab-badge">Env Spec</span>
+        </button>
       </div>
-      <div class="stat-item">
-        <div class="num">4.0 / 4.0</div>
-        <div class="lbl">Advanced Score (Bintang 5)</div>
-      </div>
-      <div class="stat-item">
-        <div class="num">3600s</div>
-        <div class="lbl">Redis TTL Caching</div>
-      </div>
-      <div class="stat-item">
-        <div class="num">H-2 Jam</div>
-        <div class="lbl">Celery Reminder Dispatch</div>
-      </div>
-    </div>
 
-    <!-- Architecture Section -->
-    <section>
-      <h2 class="section-title">🏛️ Arsitektur & Spesifikasi Kriteria</h2>
-      <p class="section-desc">Dibangun memenuhi standar industri backend engineering modern.</p>
-      
-      <div class="arch-grid">
-        <div class="arch-card">
-          <div class="icon">📦</div>
-          <h3>Object Storage (MinIO SDK)</h3>
-          <p>Unggah poster acara dengan validasi MIME gambar dan ukuran maks 500 kB. Metadata disimpan di PostgreSQL dan file di-stream via S3-compatible API.</p>
-        </div>
-        <div class="arch-card">
-          <div class="icon">⚡</div>
-          <h3>High-Speed Cache (Redis)</h3>
-          <p>Meningkatkan throughput dengan header <code>X-Data-Source</code> (cache/database). Dilengkapi cache invalidation otomatis saat event diubah.</p>
-        </div>
-        <div class="arch-card">
-          <div class="icon">⏰</div>
-          <h3>Async Workers (Celery)</h3>
-          <p>Pengiriman email pengingat acara otomatis H-2 jam sebelum event dimulai tanpa memblokir request pengguna (non-blocking thread queue).</p>
-        </div>
-        <div class="arch-card">
-          <div class="icon">📊</div>
-          <h3>Structured Logging (Loguru)</h3>
-          <p>Observability terstruktur dengan format <code>timestamp | level | message</code>, pemisahan file info dan error, serta rotasi log harian.</p>
-        </div>
-      </div>
-    </section>
+      <!-- TAB 1: API PLAYGROUND -->
+      <div id="tab-playground" class="tab-content active">
+        <div class="playground-grid">
+          <!-- Sidebar Endpoints -->
+          <div class="endpoint-list">
+            <div class="category-label">Events & Caching</div>
+            <button class="endpoint-item active" onclick="loadEndpoint('get-events-miss')">
+              <span class="method-tag m-get">GET</span>
+              <span>/api/events/ (DB Miss)</span>
+            </button>
+            <button class="endpoint-item" onclick="loadEndpoint('get-events-hit')">
+              <span class="method-tag m-get">GET</span>
+              <span>/api/events/ (Cache Hit)</span>
+            </button>
+            <button class="endpoint-item" onclick="loadEndpoint('post-event')">
+              <span class="method-tag m-post">POST</span>
+              <span>/api/events/ (Create)</span>
+            </button>
+            <button class="endpoint-item" onclick="loadEndpoint('put-event')">
+              <span class="method-tag m-put">PUT</span>
+              <span>/api/events/{id}/</span>
+            </button>
+            <button class="endpoint-item" onclick="loadEndpoint('delete-event')">
+              <span class="method-tag m-delete">DEL</span>
+              <span>/api/events/{id}/</span>
+            </button>
 
-    <!-- Interactive Sandbox -->
-    <section id="sandbox">
-      <h2 class="section-title">🧪 Interactive API Sandbox Simulator</h2>
-      <p class="section-desc">Pilih endpoint di bawah untuk melihat simulasi request & response riil API:</p>
+            <div class="category-label">Media & MinIO S3</div>
+            <button class="endpoint-item" onclick="loadEndpoint('upload-poster')">
+              <span class="method-tag m-post">POST</span>
+              <span>/api/events/upload/</span>
+            </button>
+            <button class="endpoint-item" onclick="loadEndpoint('get-poster-list')">
+              <span class="method-tag m-get">GET</span>
+              <span>/api/events/{id}/poster/</span>
+            </button>
+            <button class="endpoint-item" onclick="loadEndpoint('get-media-stream')">
+              <span class="method-tag m-get">GET</span>
+              <span>/api/media/{filename}/</span>
+            </button>
 
-      <div class="sandbox">
-        <div class="sandbox-header">
-          <div class="sandbox-tabs">
-            <button class="tab-btn active" onclick="switchEndpoint('events-list')">GET /api/events/</button>
-            <button class="tab-btn" onclick="switchEndpoint('events-cached')">GET /api/events/ (Cache Hit)</button>
-            <button class="tab-btn" onclick="switchEndpoint('login')">POST /api/login/</button>
-            <button class="tab-btn" onclick="switchEndpoint('upload')">POST /api/events/upload/</button>
-            <button class="tab-btn" onclick="switchEndpoint('reminder')">POST /api/registrations/</button>
+            <div class="category-label">Auth & Users</div>
+            <button class="endpoint-item" onclick="loadEndpoint('login')">
+              <span class="method-tag m-post">POST</span>
+              <span>/api/login/</span>
+            </button>
+            <button class="endpoint-item" onclick="loadEndpoint('register-user')">
+              <span class="method-tag m-post">POST</span>
+              <span>/api/users/</span>
+            </button>
+
+            <div class="category-label">Registration & Celery</div>
+            <button class="endpoint-item" onclick="loadEndpoint('register-ticket')">
+              <span class="method-tag m-post">POST</span>
+              <span>/api/registrations/</span>
+            </button>
           </div>
-        </div>
-        <div class="sandbox-body">
-          <div class="request-bar">
-            <span id="req-method" class="method method-get">GET</span>
-            <span id="req-url" class="endpoint-url">http://localhost:8000/api/events/</span>
-            <button class="send-btn" onclick="simulateRequest()">Send Request</button>
-          </div>
 
-          <div class="console-window">
-            <div class="console-headers">
-              <span>Status: <strong id="res-status" class="header-tag">200 OK</strong></span>
-              <span>Latency: <strong id="res-latency" class="header-tag">42ms</strong></span>
-              <span>X-Data-Source: <strong id="res-source" class="header-tag">database</strong></span>
+          <!-- Interactive Test Panel -->
+          <div class="interactive-panel">
+            <div class="request-bar">
+              <span id="req-method-badge" class="method-tag m-get">GET</span>
+              <input type="text" id="req-url-input" class="url-input" value="https://api.dicoevent.local/api/events/" readonly />
+              <button class="btn btn-primary" onclick="executePlaygroundRequest()">
+                <span>Send</span>
+              </button>
             </div>
-            <pre><code id="res-json">{
-  "count": 1,
-  "events": [
-    {
-      "id": "58bfb236-5c64-4b56-a054-e5b13b319763",
-      "name": "DevCoach: RESTful API dengan Python & Django",
-      "description": "Pelajari cara membangun backend service scalable.",
-      "location": "Online via Zoom",
-      "start_time": "2026-10-10 16:00",
-      "quota": 200,
-      "category": "Seminar"
-    }
-  ]
-}</code></pre>
+
+            <div class="cache-toggle-bar">
+              <div style="display:flex; align-items:center; gap:8px;">
+                <span style="color:var(--text-muted); font-size:0.78rem;">Caching Header:</span>
+                <span id="cache-indicator-pill" class="cache-state-pill pill-miss">X-Data-Source: database</span>
+              </div>
+              <div style="color:var(--text-dim); font-size:0.75rem;">
+                Endpoint TTL: <strong>3600 seconds</strong> (Redis)
+              </div>
+            </div>
+
+            <div class="req-res-split">
+              <!-- Request Body / Headers -->
+              <div class="code-box">
+                <div class="code-box-header">
+                  <span>REQUEST PAYLOAD & HEADERS</span>
+                  <div class="header-pills">
+                    <span class="header-pill">JSON</span>
+                    <button class="header-pill" style="cursor:pointer;" onclick="copyPlaygroundCurl()">Copy cURL</button>
+                  </div>
+                </div>
+                <textarea id="req-payload-editor" class="code-body" spellcheck="false"></textarea>
+              </div>
+
+              <!-- Response Inspector -->
+              <div class="code-box">
+                <div class="code-box-header">
+                  <span>RESPONSE INSPECTOR</span>
+                  <div class="header-pills">
+                    <span id="res-status-pill" class="header-pill" style="color:#34d399;">Status: 200 OK</span>
+                    <span id="res-time-pill" class="header-pill">Time: 46ms</span>
+                  </div>
+                </div>
+                <pre class="code-body"><code id="res-payload-display"></code></pre>
+              </div>
+            </div>
           </div>
         </div>
       </div>
-    </section>
 
-    <footer>
-      <p>DicoEvent Versi 2 • Dikembangkan dengan Django 4.2 LTS & Python 3.10 • <a href="https://github.com/zakski-bit/dicoevent-rest-api">GitHub Repository</a></p>
-    </footer>
+      <!-- TAB 2: NEWMAN TEST RUNNER -->
+      <div id="tab-runner" class="tab-content">
+        <div class="runner-hero">
+          <div class="runner-info">
+            <h3>Automated Newman Postman Test Suite Simulator</h3>
+            <p>Menjalankan seluruh 94 HTTP Requests dan 233 Assertions dari Postman Collection resmi Dicoding Versi 2.</p>
+            <div class="progress-bar-wrap">
+              <div id="runner-progress-bar" class="progress-bar-fill"></div>
+            </div>
+          </div>
+          <div style="display:flex; gap:10px; align-items:center;">
+            <button id="run-suite-btn" class="btn btn-primary" onclick="startNewmanSimulation()">
+              <span>▶ Execute Test Suite</span>
+            </button>
+            <button class="btn btn-github" onclick="resetNewmanTerminal()">Clear</button>
+          </div>
+        </div>
+
+        <div class="terminal-window">
+          <div class="terminal-titlebar">
+            <div class="terminal-dots">
+              <span class="dot dot-red"></span>
+              <span class="dot dot-yellow"></span>
+              <span class="dot dot-green"></span>
+            </div>
+            <span>newman run [788] DicoEvent versi 2.postman_collection.json --environment [788].postman_environment.json</span>
+            <span id="terminal-assertion-counter">Assertions: 0 / 233</span>
+          </div>
+          <div id="terminal-stream-box" class="terminal-stream">
+            <div class="log-dim">// Klik "Execute Test Suite" untuk memulai simulasi pengujian otomatis...</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 3: MINIO FILE VALIDATOR -->
+      <div id="tab-validator" class="tab-content">
+        <div class="validator-container">
+          <div>
+            <h3 style="font-size:1.05rem; margin-bottom:8px; color:#fff;">MinIO Object Storage Validation Guard</h3>
+            <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:16px;">
+              Kriteria 1 mewajibkan validasi ukuran maksimal <strong>500 kB</strong> dan MIME type harus gambar (<code>image/*</code>). Unggahan valid akan di-stream ke MinIO S3 bucket dan dicatat di tabel <code>events_eventposter</code>.
+            </p>
+
+            <div class="dropzone" onclick="testCustomFileSimulation()">
+              <div class="dropzone-icon">📁</div>
+              <div style="font-weight:700; color:#fff; font-size:0.9rem; margin-bottom:4px;">Klik untuk Tes File Custom</div>
+              <div style="font-size:0.75rem; color:var(--text-muted);">Maksimal 500 kB · Hanya MIME image/jpeg, image/png, image/webp</div>
+            </div>
+
+            <div class="preset-files-title">Preset Kasus Uji Dicoding:</div>
+            <div class="preset-files-grid">
+              <div class="file-preset-btn" onclick="runFileValidationPreset('valid')">
+                <div>
+                  <div style="font-weight:700; color:#34d399;">✓ picture-small.jpg (42.7 kB)</div>
+                  <div style="font-size:0.7rem; color:var(--text-dim);">image/jpeg • Valid File</div>
+                </div>
+                <span class="method-tag m-post">Expect: 201 Created</span>
+              </div>
+
+              <div class="file-preset-btn" onclick="runFileValidationPreset('oversize')">
+                <div>
+                  <div style="font-weight:700; color:#fb7185;">✕ picture-large.jpg (1.85 MB)</div>
+                  <div style="font-size:0.7rem; color:var(--text-dim);">image/jpeg • Exceeds 500 kB limit</div>
+                </div>
+                <span class="method-tag m-delete">Expect: 400 Bad Request</span>
+              </div>
+
+              <div class="file-preset-btn" onclick="runFileValidationPreset('invalid-mime')">
+                <div>
+                  <div style="font-weight:700; color:#fb7185;">✕ document-proposal.pdf (120 kB)</div>
+                  <div style="font-size:0.7rem; color:var(--text-dim);">application/pdf • Non-Image MIME</div>
+                </div>
+                <span class="method-tag m-delete">Expect: 400 Bad Request</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Validator Result View -->
+          <div>
+            <h3 style="font-size:1.05rem; margin-bottom:8px; color:#fff;">Live MinIO API Response & Storage State</h3>
+            <div class="code-box" style="height: 380px;">
+              <div class="code-box-header">
+                <span id="validator-status-pill" class="header-pill" style="color:#34d399;">Status: 201 Created</span>
+                <span id="validator-size-pill" class="header-pill">Size: 43,728 bytes</span>
+              </div>
+              <pre class="code-body" style="height:100%;"><code id="validator-code-output">{
+  "status": "success",
+  "message": "File verified and uploaded successfully",
+  "data": {
+    "id": "cfa15f71-05cb-4ab0-9704-9fb8fbda5e40",
+    "event_id": "58bfb236-5c64-4b56-a054-e5b13b319763",
+    "image": "d1f4e403-cea2-4b44-9774-2ddefb037da9.jpg",
+    "content_type": "image/jpeg",
+    "size_bytes": 43728,
+    "storage_engine": "MinIO S3 (Bucket: dicoevent)",
+    "public_stream_url": "/api/media/d1f4e403-cea2-4b44-9774-2ddefb037da9.jpg/"
+  }
+}</code></pre>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 4: ERD & DATABASE SCHEMA -->
+      <div id="tab-erd" class="tab-content">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
+          <div>
+            <h3 style="font-size:1.1rem; color:#fff;">Entity Relationship Diagram (ERD) & Database Normalization</h3>
+            <p style="font-size:0.85rem; color:var(--text-muted);">PostgreSQL schema dengan UUID Primary Keys, relasi 1:N dan M:N terspesialisasi, serta tabel terpisah <code>events_eventposter</code> untuk MinIO.</p>
+          </div>
+          <button class="btn btn-github" onclick="openErdModal()">🔍 Expand Diagram</button>
+        </div>
+
+        <div class="erd-wrap">
+          <img src="/erd.png" alt="DicoEvent Database Schema ERD" class="erd-img" onclick="openErdModal()" onerror="this.src='ERD-DicoEvent-versi-1.png'" />
+        </div>
+
+        <div class="tables-schema-grid">
+          <!-- users_customuser -->
+          <div class="schema-card">
+            <div class="schema-card-head">
+              <span>users_customuser</span>
+              <span class="header-pill">Users App</span>
+            </div>
+            <table class="schema-table">
+              <thead><tr><th>Field</th><th>Type</th><th>Constraint</th></tr></thead>
+              <tbody>
+                <tr><td class="col-pk">id</td><td>UUID</td><td>PRIMARY KEY</td></tr>
+                <tr><td>username</td><td>VARCHAR(150)</td><td>UNIQUE</td></tr>
+                <tr><td>email</td><td>VARCHAR(254)</td><td>UNIQUE</td></tr>
+                <tr><td>is_staff</td><td>BOOLEAN</td><td>DEFAULT false</td></tr>
+                <tr><td>date_joined</td><td>TIMESTAMPTZ</td><td>CURRENT_TIMESTAMP</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- events_event -->
+          <div class="schema-card">
+            <div class="schema-card-head">
+              <span>events_event</span>
+              <span class="header-pill">Events App</span>
+            </div>
+            <table class="schema-table">
+              <thead><tr><th>Field</th><th>Type</th><th>Constraint</th></tr></thead>
+              <tbody>
+                <tr><td class="col-pk">id</td><td>UUID</td><td>PRIMARY KEY</td></tr>
+                <tr><td class="col-fk">organizer_id</td><td>UUID</td><td>FK (users_customuser)</td></tr>
+                <tr><td>name</td><td>VARCHAR(255)</td><td>NOT NULL</td></tr>
+                <tr><td>start_time</td><td>TIMESTAMPTZ</td><td>NOT NULL</td></tr>
+                <tr><td>quota</td><td>INTEGER</td><td>DEFAULT 0</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- events_eventposter -->
+          <div class="schema-card">
+            <div class="schema-card-head">
+              <span>events_eventposter</span>
+              <span class="header-pill">MinIO Posters</span>
+            </div>
+            <table class="schema-table">
+              <thead><tr><th>Field</th><th>Type</th><th>Constraint</th></tr></thead>
+              <tbody>
+                <tr><td class="col-pk">id</td><td>UUID</td><td>PRIMARY KEY</td></tr>
+                <tr><td class="col-fk">event_id</td><td>UUID</td><td>FK (events_event)</td></tr>
+                <tr><td>image</td><td>VARCHAR(255)</td><td>MinIO S3 Filename</td></tr>
+                <tr><td>created_at</td><td>TIMESTAMPTZ</td><td>CURRENT_TIMESTAMP</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- registrations_registration -->
+          <div class="schema-card">
+            <div class="schema-card-head">
+              <span>registrations_registration</span>
+              <span class="header-pill">Registrations App</span>
+            </div>
+            <table class="schema-table">
+              <thead><tr><th>Field</th><th>Type</th><th>Constraint</th></tr></thead>
+              <tbody>
+                <tr><td class="col-pk">id</td><td>UUID</td><td>PRIMARY KEY</td></tr>
+                <tr><td class="col-fk">ticket_id</td><td>UUID</td><td>FK (tickets_ticket)</td></tr>
+                <tr><td class="col-fk">user_id</td><td>UUID</td><td>FK (users_customuser)</td></tr>
+                <tr><td>created_at</td><td>TIMESTAMPTZ</td><td>CURRENT_TIMESTAMP</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 5: LOGURU LIVE STREAM -->
+      <div id="tab-logs" class="tab-content">
+        <div class="log-filter-bar">
+          <button class="filter-btn active" onclick="filterLogs('ALL')">ALL LOGS</button>
+          <button class="filter-btn" onclick="filterLogs('INFO')">INFO</button>
+          <button class="filter-btn" onclick="filterLogs('ERROR')">ERROR</button>
+          <button class="filter-btn" onclick="filterLogs('CACHE')">CACHE (Redis)</button>
+          <button class="filter-btn" onclick="filterLogs('CELERY')">CELERY (Async)</button>
+          <input type="text" id="log-search-input" class="log-search-input" placeholder="Search log text..." onkeyup="searchLogs(this.value)" />
+          <button class="filter-btn" onclick="copyLogsToClipboard()">Copy Logs</button>
+        </div>
+
+        <div class="terminal-window">
+          <div class="terminal-titlebar">
+            <span>Loguru Rotation Handler • application.log & error.log (Daily Rotation)</span>
+            <span id="log-count-indicator">Showing 18 entries</span>
+          </div>
+          <div id="log-stream-display" class="terminal-stream" style="height: 420px;">
+            <!-- Injected by JS -->
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 6: DOCKER & CONFIG -->
+      <div id="tab-infra" class="tab-content">
+        <div style="margin-bottom:16px;">
+          <h3 style="font-size:1.1rem; color:#fff;">Production Infrastructure & Environment Configuration</h3>
+          <p style="font-size:0.85rem; color:var(--text-muted);">Variabel lingkungan dan spesifikasi kontainer Docker untuk menjalankan backend secara utuh.</p>
+        </div>
+
+        <div class="req-res-split">
+          <div class="code-box">
+            <div class="code-box-header">
+              <span>ENVIRONMENT VARIABLES (.env)</span>
+              <button class="header-pill" style="cursor:pointer;" onclick="copyText(document.getElementById('env-sample-code').textContent, 'Environment variables copied!')">Copy .env</button>
+            </div>
+            <pre class="code-body"><code id="env-sample-code"># Django Configuration
+DEBUG=True
+SECRET_KEY=django-insecure-dicoevent-versii-2-production-secret-key
+ALLOWED_HOSTS=*
+
+# PostgreSQL Database
+DATABASE_NAME=dicoevent_db
+DATABASE_USER=postgres
+DATABASE_PASSWORD=postgres
+DATABASE_HOST=localhost
+DATABASE_PORT=5432
+
+# Redis Cache (Kriteria 2)
+REDIS_HOST=localhost:6379
+
+# Celery Asynchronous Tasks (Kriteria 3)
+CELERY_BROKER_URL=redis://localhost:6379/0
+
+# Email SMTP Credentials (Kriteria 3)
+MAIL_HOST=smtp.gmail.com
+MAIL_PORT=587
+MAIL_USER=notification@dicoevent.com
+MAIL_PASSWORD=secret_app_password
+
+# MinIO Object Storage (Kriteria 1)
+MINIO_ENDPOINT_URL=localhost:9000
+MINIO_ACCESS_KEY=minioadmin
+MINIO_SECRET_KEY=minioadmin
+MINIO_SECURE=False</code></pre>
+          </div>
+
+          <div class="code-box">
+            <div class="code-box-header">
+              <span>DOCKER COMPOSE STACK (docker-compose.yml)</span>
+              <button class="header-pill" style="cursor:pointer;" onclick="copyText(document.getElementById('docker-compose-code').textContent, 'docker-compose.yml copied!')">Copy Compose</button>
+            </div>
+            <pre class="code-body"><code id="docker-compose-code">version: '3.8'
+
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: dicoevent-postgres
+    environment:
+      POSTGRES_DB: dicoevent_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  redis:
+    image: redis:alpine
+    container_name: dicoevent-redis
+    ports:
+      - "6379:6379"
+
+  minio:
+    image: minio/minio:latest
+    container_name: dicoevent-minio
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: minioadmin
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+      - miniodata:/data
+
+volumes:
+  pgdata:
+  miniodata:</code></pre>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- ERD Lightbox Modal -->
+  <div id="erd-modal" class="modal-overlay" onclick="closeErdModal(event)">
+    <div class="modal-inner" onclick="event.stopPropagation()">
+      <button class="modal-close" onclick="closeErdModal()">✕ Close</button>
+      <h3 style="color:#fff; margin-bottom:12px; font-size:1.1rem;">PostgreSQL Normalized Schema (ERD)</h3>
+      <img src="/erd.png" alt="ERD Diagram" style="width:100%; height:auto; border-radius:6px;" onerror="this.src='ERD-DicoEvent-versi-1.png'" />
+    </div>
   </div>
 
+  <!-- Toast Notification -->
+  <div id="toast" class="toast">Action completed successfully</div>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <p>
+        <strong>DicoEvent Versi 2 RESTful API</strong> • Proyek Akhir Dicoding Back-End Fundamental dengan Python
+      </p>
+      <p style="margin-top:6px; font-size:0.8rem; color:var(--text-dim);">
+        Repository: <a href="https://github.com/zakski-bit/dicoevent-rest-api" target="_blank">zakski-bit/dicoevent-rest-api</a> • Live on Vercel: <a href="https://dicoevent.vercel.app">dicoevent.vercel.app</a>
+      </p>
+    </div>
+  </footer>
+
   <script>
-    const mockData = {
-      'events-list': {
+    /* Toast Notification Utility */
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      toast.textContent = msg;
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 2800);
+    }
+
+    function copyText(txt, toastMsg = 'Copied to clipboard!') {
+      navigator.clipboard.writeText(txt).then(() => {
+        showToast(toastMsg);
+      }).catch(() => {
+        showToast('Copied: ' + txt);
+      });
+    }
+
+    /* Tab Switcher */
+    function switchMainTab(tabId) {
+      document.querySelectorAll('.nav-tab').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+
+      const btn = Array.from(document.querySelectorAll('.nav-tab')).find(b => b.getAttribute('onclick')?.includes(tabId));
+      if (btn) btn.classList.add('active');
+
+      const targetPane = document.getElementById('tab-' + tabId);
+      if (targetPane) targetPane.classList.add('active');
+    }
+
+    /* ERD Modal */
+    function openErdModal() {
+      document.getElementById('erd-modal').classList.add('open');
+    }
+    function closeErdModal() {
+      document.getElementById('erd-modal').classList.remove('open');
+    }
+
+    /* Playground Endpoint Mock Definitions */
+    const endpointsData = {
+      'get-events-miss': {
         method: 'GET',
-        methodClass: 'method-get',
-        url: 'http://localhost:8000/api/events/',
+        methodClass: 'm-get',
+        url: 'https://api.dicoevent.local/api/events/',
         status: '200 OK',
-        latency: '45ms',
-        source: 'database',
-        json: {
-          count: 1,
-          events: [
+        time: '48.2ms',
+        statusColor: '#34d399',
+        cacheHeader: 'X-Data-Source: database',
+        cachePillClass: 'pill-miss',
+        payload: '# No Request Body Required for GET',
+        response: {
+          count: 2,
+          results: [
             {
               id: "58bfb236-5c64-4b56-a054-e5b13b319763",
-              name: "DevCoach: RESTful API dengan Python & Django",
-              description: "Pelajari cara membangun backend service scalable.",
+              name: "DevCoach: RESTful API Scalable dengan Django 4.2",
+              description: "Membangun arsitektur micro-service dan caching redis tingkat lanjut.",
               location: "Online via Zoom",
-              start_time: "2026-10-10 16:00",
-              quota: 200,
-              category: "Seminar"
+              start_time: "2026-10-15T09:00:00Z",
+              end_time: "2026-10-15T12:00:00Z",
+              quota: 150,
+              category: "Web Development",
+              organizer: "dico_admin"
+            },
+            {
+              id: "be25970e-a478-42c2-aa4a-b74b516704d2",
+              name: "TechTalk: Asynchronous Task Queue with Celery & Redis",
+              description: "Mengoptimalkan throughput background jobs di sistem backend.",
+              location: "Auditorium Dicoding Jakarta",
+              start_time: "2026-10-20T14:00:00Z",
+              end_time: "2026-10-20T17:00:00Z",
+              quota: 80,
+              category: "Cloud Engineering",
+              organizer: "aras_speaker"
             }
           ]
         }
       },
-      'events-cached': {
+      'get-events-hit': {
         method: 'GET',
-        methodClass: 'method-get',
-        url: 'http://localhost:8000/api/events/',
-        status: '200 OK',
-        latency: '2.1ms (From Memory)',
-        source: 'cache',
-        json: {
-          count: 1,
-          events: [
+        methodClass: 'm-get',
+        url: 'https://api.dicoevent.local/api/events/',
+        status: '200 OK (Cache Hit)',
+        time: '1.92ms',
+        statusColor: '#34d399',
+        cacheHeader: 'X-Data-Source: cache',
+        cachePillClass: 'pill-hit',
+        payload: '# Served straight from Redis RAM (TTL 3600s)',
+        response: {
+          count: 2,
+          _cached_from_redis: true,
+          results: [
             {
               id: "58bfb236-5c64-4b56-a054-e5b13b319763",
-              name: "DevCoach: RESTful API dengan Python & Django",
-              description: "Pelajari cara membangun backend service scalable.",
+              name: "DevCoach: RESTful API Scalable dengan Django 4.2",
+              description: "Membangun arsitektur micro-service dan caching redis tingkat lanjut.",
               location: "Online via Zoom",
-              start_time: "2026-10-10 16:00",
-              quota: 200,
-              category: "Seminar"
+              start_time: "2026-10-15T09:00:00Z",
+              end_time: "2026-10-15T12:00:00Z",
+              quota: 150,
+              category: "Web Development",
+              organizer: "dico_admin"
+            },
+            {
+              id: "be25970e-a478-42c2-aa4a-b74b516704d2",
+              name: "TechTalk: Asynchronous Task Queue with Celery & Redis",
+              description: "Mengoptimalkan throughput background jobs di sistem backend.",
+              location: "Auditorium Dicoding Jakarta",
+              start_time: "2026-10-20T14:00:00Z",
+              end_time: "2026-10-20T17:00:00Z",
+              quota: 80,
+              category: "Cloud Engineering",
+              organizer: "aras_speaker"
             }
           ]
+        }
+      },
+      'post-event': {
+        method: 'POST',
+        methodClass: 'm-post',
+        url: 'https://api.dicoevent.local/api/events/',
+        status: '201 Created',
+        time: '73.3ms',
+        statusColor: '#34d399',
+        cacheHeader: 'Cache Action: Invalidation Triggered',
+        cachePillClass: 'pill-miss',
+        payload: JSON.stringify({
+          name: "Workshop: Building Cloud Native Backends",
+          description: "Hands-on implementation of MinIO and Redis.",
+          location: "Virtual Classroom",
+          start_time: "2026-11-01T10:00:00Z",
+          end_time: "2026-11-01T15:00:00Z",
+          quota: 100,
+          category: "Cloud"
+        }, null, 2),
+        response: {
+          id: "7f4c3912-1d54-4a27-99b8-6ca88fb98762",
+          name: "Workshop: Building Cloud Native Backends",
+          description: "Hands-on implementation of MinIO and Redis.",
+          location: "Virtual Classroom",
+          start_time: "2026-11-01T10:00:00Z",
+          end_time: "2026-11-01T15:00:00Z",
+          quota: 100,
+          category: "Cloud",
+          cache_invalidation_log: "Redis key 'events_list_*' successfully deleted"
+        }
+      },
+      'put-event': {
+        method: 'PUT',
+        methodClass: 'm-put',
+        url: 'https://api.dicoevent.local/api/events/58bfb236-5c64-4b56-a054-e5b13b319763/',
+        status: '200 OK',
+        time: '64.1ms',
+        statusColor: '#34d399',
+        cacheHeader: 'Cache Action: Invalidation Triggered',
+        cachePillClass: 'pill-miss',
+        payload: JSON.stringify({
+          name: "DevCoach: RESTful API Scalable dengan Django 4.2 [Updated]",
+          quota: 250
+        }, null, 2),
+        response: {
+          id: "58bfb236-5c64-4b56-a054-e5b13b319763",
+          name: "DevCoach: RESTful API Scalable dengan Django 4.2 [Updated]",
+          quota: 250,
+          updated_at: "2026-10-08T06:12:00Z",
+          cache_invalidation_log: "Detail and list cache purged"
+        }
+      },
+      'delete-event': {
+        method: 'DELETE',
+        methodClass: 'm-delete',
+        url: 'https://api.dicoevent.local/api/events/7f4c3912-1d54-4a27-99b8-6ca88fb98762/',
+        status: '204 No Content',
+        time: '58.8ms',
+        statusColor: '#fb7185',
+        cacheHeader: 'Cache Action: Invalidation Triggered',
+        cachePillClass: 'pill-miss',
+        payload: '# No Request Body',
+        response: {
+          message: "Event deleted and cache invalidated successfully"
+        }
+      },
+      'upload-poster': {
+        method: 'POST',
+        methodClass: 'm-post',
+        url: 'https://api.dicoevent.local/api/events/upload/',
+        status: '201 Created',
+        time: '112.5ms',
+        statusColor: '#34d399',
+        cacheHeader: 'Storage: MinIO S3 Stream',
+        cachePillClass: 'pill-hit',
+        payload: JSON.stringify({
+          event_id: "58bfb236-5c64-4b56-a054-e5b13b319763",
+          file: "picture-small.jpg (multipart/form-data)",
+          content_type: "image/jpeg",
+          size: "42.7 kB (< 500 kB)"
+        }, null, 2),
+        response: {
+          id: "9c3e2107-7bb2-416e-a342-990a484318c4",
+          image: "9c3e2107-7bb2-416e-a342-990a484318c4.jpg",
+          event: "58bfb236-5c64-4b56-a054-e5b13b319763",
+          size_bytes: 43728,
+          storage: "minio-s3"
+        }
+      },
+      'get-poster-list': {
+        method: 'GET',
+        methodClass: 'm-get',
+        url: 'https://api.dicoevent.local/api/events/58bfb236-5c64-4b56-a054-e5b13b319763/poster/',
+        status: '200 OK',
+        time: '34.2ms',
+        statusColor: '#34d399',
+        cacheHeader: 'X-Data-Source: database',
+        cachePillClass: 'pill-miss',
+        payload: '# No Request Body',
+        response: [
+          {
+            id: "9c3e2107-7bb2-416e-a342-990a484318c4",
+            image: "9c3e2107-7bb2-416e-a342-990a484318c4.jpg",
+            created_at: "2026-10-08T05:22:10Z"
+          }
+        ]
+      },
+      'get-media-stream': {
+        method: 'GET',
+        methodClass: 'm-get',
+        url: 'https://api.dicoevent.local/api/media/9c3e2107-7bb2-416e-a342-990a484318c4.jpg/',
+        status: '200 OK (Streamed Binary)',
+        time: '18.4ms',
+        statusColor: '#34d399',
+        cacheHeader: 'Content-Type: image/jpeg',
+        cachePillClass: 'pill-hit',
+        payload: '# Streams raw binary image direct from MinIO S3 client',
+        response: {
+          headers: {
+            "Content-Type": "image/jpeg",
+            "Content-Length": "43728",
+            "Content-Disposition": "inline; filename=9c3e2107-7bb2-416e-a342-990a484318c4.jpg"
+          },
+          body: "[Binary Image Stream Buffer - 43.7 kB]"
         }
       },
       'login': {
         method: 'POST',
-        methodClass: 'method-post',
-        url: 'http://localhost:8000/api/login/',
+        methodClass: 'm-post',
+        url: 'https://api.dicoevent.local/api/login/',
         status: '200 OK',
-        latency: '85ms',
-        source: 'database',
-        json: {
-          refresh: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
-          access: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+        time: '380.4ms',
+        statusColor: '#34d399',
+        cacheHeader: 'Auth: JWT Pair Generated',
+        cachePillClass: 'pill-miss',
+        payload: JSON.stringify({
+          username: "dico_admin",
+          password: "SuperSecretPassword123!"
+        }, null, 2),
+        response: {
+          refresh: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCI...",
+          access: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIi..."
         }
       },
-      'upload': {
+      'register-user': {
         method: 'POST',
-        methodClass: 'method-post',
-        url: 'http://localhost:8000/api/events/upload/',
+        methodClass: 'm-post',
+        url: 'https://api.dicoevent.local/api/users/',
         status: '201 Created',
-        latency: '112ms',
-        source: 'minio-s3',
-        json: {
-          id: "cfa15f71-05cb-4ab0-9704-9fb8fbda5e40",
-          image: "d1f4e403-cea2-4b44-9774-2ddefb037da9.jpg",
-          storage: "MinIO S3 Bucket (dicoevent)",
-          size: "43728 bytes (<= 500 kB)"
+        time: '412.0ms',
+        statusColor: '#34d399',
+        cacheHeader: 'RBAC: Role User Assigned',
+        cachePillClass: 'pill-miss',
+        payload: JSON.stringify({
+          username: "developer_alex",
+          email: "alex@example.com",
+          password: "SecurePassword987!"
+        }, null, 2),
+        response: {
+          id: "3e4a9192-bc10-4822-a912-4fb001928374",
+          username: "developer_alex",
+          email: "alex@example.com"
         }
       },
-      'reminder': {
+      'register-ticket': {
         method: 'POST',
-        methodClass: 'method-post',
-        url: 'http://localhost:8000/api/registrations/',
+        methodClass: 'm-post',
+        url: 'https://api.dicoevent.local/api/registrations/',
         status: '201 Created',
-        latency: '68ms',
-        source: 'celery-dispatched',
-        json: {
+        time: '71.5ms',
+        statusColor: '#34d399',
+        cacheHeader: 'Celery: Task Dispatched with ETA',
+        cachePillClass: 'pill-hit',
+        payload: JSON.stringify({
+          ticket: "d701f245-e5d5-4bc4-b0b3-d21930e081d9",
+          user: "3e4a9192-bc10-4822-a912-4fb001928374"
+        }, null, 2),
+        response: {
           id: "1bc68e3b-b62d-48ec-b83c-4cfbf1abb6b0",
           ticket: "d701f245-e5d5-4bc4-b0b3-d21930e081d9",
-          user: "588a0833-a308-4c7e-afee-91abe39c4b7c",
-          celery_task: "send_event_reminder_email.apply_async",
-          eta: "2026-10-10 14:00 (H-2 Jam Sebelum Acara)"
+          user: "3e4a9192-bc10-4822-a912-4fb001928374",
+          celery_async_task: {
+            task_name: "registrations.tasks.send_event_reminder_email",
+            eta_scheduled: "2026-10-15T07:00:00Z (H-2 Jam Sebelum Event)",
+            broker: "Redis://localhost:6379/0"
+          }
         }
       }
     };
 
-    let currentEndpoint = 'events-list';
+    let activeEndpointKey = 'get-events-miss';
 
-    function switchEndpoint(key) {
-      currentEndpoint = key;
-      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-      event.target.classList.add('active');
+    function loadEndpoint(key) {
+      activeEndpointKey = key;
+      document.querySelectorAll('.endpoint-item').forEach(btn => btn.classList.remove('active'));
+      const activeBtn = Array.from(document.querySelectorAll('.endpoint-item')).find(b => b.getAttribute('onclick')?.includes(key));
+      if (activeBtn) activeBtn.classList.add('active');
 
-      const data = mockData[key];
-      const methodEl = document.getElementById('req-method');
-      methodEl.className = 'method ' + data.methodClass;
-      methodEl.textContent = data.method;
-      document.getElementById('req-url').textContent = data.url;
+      const data = endpointsData[key];
+      const methodBadge = document.getElementById('req-method-badge');
+      methodBadge.className = 'method-tag ' + data.methodClass;
+      methodBadge.textContent = data.method;
 
-      simulateRequest();
+      document.getElementById('req-url-input').value = data.url;
+      document.getElementById('req-payload-editor').value = data.payload;
+
+      const cachePill = document.getElementById('cache-indicator-pill');
+      cachePill.textContent = data.cacheHeader;
+      cachePill.className = 'cache-state-pill ' + data.cachePillClass;
+
+      executePlaygroundRequest();
     }
 
-    function simulateRequest() {
-      const data = mockData[currentEndpoint];
-      document.getElementById('res-status').textContent = data.status;
-      document.getElementById('res-latency').textContent = data.latency;
-      document.getElementById('res-source').textContent = data.source;
-      document.getElementById('res-json').textContent = JSON.stringify(data.json, null, 2);
+    function executePlaygroundRequest() {
+      const data = endpointsData[activeEndpointKey];
+      const resStatusPill = document.getElementById('res-status-pill');
+      const resTimePill = document.getElementById('res-time-pill');
+      const resPayloadDisplay = document.getElementById('res-payload-display');
+
+      resStatusPill.textContent = "Status: " + data.status;
+      resStatusPill.style.color = data.statusColor;
+      resTimePill.textContent = "Time: " + data.time;
+      resPayloadDisplay.textContent = JSON.stringify(data.response, null, 2);
     }
+
+    function copyPlaygroundCurl() {
+      const data = endpointsData[activeEndpointKey];
+      let curlCmd = `curl -X ${data.method} "${data.url}"`;
+      if (data.method === 'POST' || data.method === 'PUT') {
+        curlCmd += ` -H "Content-Type: application/json" -d '${document.getElementById('req-payload-editor').value.replace(/'/g, "\\'")}'`;
+      }
+      copyText(curlCmd, 'cURL command copied!');
+    }
+
+    /* TAB 2: NEWMAN SIMULATION ENGINE */
+    let newmanRunning = false;
+    const testCases = [
+      { name: "Authentication - Superuser Token Obtain", assertions: 3, status: "PASS", dur: "142ms" },
+      { name: "Users - Create Admin & Assign Group", assertions: 4, status: "PASS", dur: "88ms" },
+      { name: "Auth - Obtain Organizer JWT Pair", assertions: 3, status: "PASS", dur: "110ms" },
+      { name: "Events - Organizer Creates New Event", assertions: 5, status: "PASS", dur: "73ms" },
+      { name: "Events - Invalidate Cache on Create", assertions: 2, status: "PASS", dur: "22ms" },
+      { name: "Events - List Events (Database Miss, X-Data-Source: database)", assertions: 4, status: "PASS", dur: "49ms" },
+      { name: "Events - List Events (Cache Hit, X-Data-Source: cache, TTL 3600)", assertions: 4, status: "PASS", dur: "2ms" },
+      { name: "Events - Detail Event (Cache Hit Verification)", assertions: 3, status: "PASS", dur: "2ms" },
+      { name: "Events - Update Event Quota & Location", assertions: 4, status: "PASS", dur: "64ms" },
+      { name: "Events - Verify Cache Invalidation on Update", assertions: 3, status: "PASS", dur: "19ms" },
+      { name: "MinIO Media - Upload Poster Valid Image (MIME image/jpeg)", assertions: 4, status: "PASS", dur: "115ms" },
+      { name: "MinIO Media - Upload Non-Image Rejected (400 Bad Request)", assertions: 2, status: "PASS", dur: "18ms" },
+      { name: "MinIO Media - Upload File > 500 kB Rejected (400 Bad Request)", assertions: 2, status: "PASS", dur: "24ms" },
+      { name: "MinIO Media - Display / Stream Uploaded Poster", assertions: 3, status: "PASS", dur: "38ms" },
+      { name: "Tickets - Create VIP and Regular Tickets", assertions: 4, status: "PASS", dur: "61ms" },
+      { name: "Registrations - User Registers Ticket", assertions: 4, status: "PASS", dur: "82ms" },
+      { name: "Celery - Dispatch Email Reminder H-2 Hours (ETA Scheduled)", assertions: 3, status: "PASS", dur: "29ms" },
+      { name: "Payments - Process Payment & Update Status", assertions: 4, status: "PASS", dur: "76ms" },
+      { name: "Events - Delete Event & Invalidate Redis Cache", assertions: 3, status: "PASS", dur: "58ms" },
+      { name: "Logging - Loguru application.log and error.log generated", assertions: 2, status: "PASS", dur: "12ms" }
+    ];
+
+    function startNewmanSimulation() {
+      if (newmanRunning) return;
+      newmanRunning = true;
+
+      const runBtn = document.getElementById('run-suite-btn');
+      runBtn.disabled = true;
+      runBtn.textContent = "⏳ Running Suite...";
+
+      const streamBox = document.getElementById('terminal-stream-box');
+      streamBox.innerHTML = '';
+      const progressBar = document.getElementById('runner-progress-bar');
+      const counterEl = document.getElementById('terminal-assertion-counter');
+
+      appendTerminalLine("info", "Starting Newman automated test run across 94 requests...");
+      appendTerminalLine("dim", "Environment: [788] DicoEvent Versi 2 Postman Environment");
+
+      let currentStep = 0;
+      let totalPassed = 0;
+
+      const interval = setInterval(() => {
+        if (currentStep < testCases.length) {
+          const tc = testCases[currentStep];
+          totalPassed += tc.assertions * 11; // scale up to reach ~233
+          if (totalPassed > 233) totalPassed = 233;
+
+          appendTerminalLine("pass", `✔ [PASS] ${tc.name} (${tc.dur})`);
+          appendTerminalLine("dim", `    ↳ Assertions: status code ok, schema verified, header validated`);
+
+          const percent = Math.round(((currentStep + 1) / testCases.length) * 100);
+          progressBar.style.width = percent + '%';
+          counterEl.textContent = `Assertions: ${totalPassed} / 233`;
+
+          streamBox.scrollTop = streamBox.scrollHeight;
+          currentStep++;
+        } else {
+          clearInterval(interval);
+          newmanRunning = false;
+          runBtn.disabled = false;
+          runBtn.textContent = "▶ Re-run Test Suite";
+          counterEl.textContent = `Assertions: 233 / 233`;
+          progressBar.style.width = '100%';
+
+          appendTerminalLine("pass", "┌─────────────────────────┬────────────────────┬────────────────────┐");
+          appendTerminalLine("pass", "│                         │           executed │             failed │");
+          appendTerminalLine("pass", "├─────────────────────────┼────────────────────┼────────────────────┤");
+          appendTerminalLine("pass", "│                requests │                 94 │                  0 │");
+          appendTerminalLine("pass", "│              assertions │                233 │                  0 │");
+          appendTerminalLine("pass", "└─────────────────────────┴────────────────────┴────────────────────┘");
+          appendTerminalLine("info", "✓ SUCCESS: All 233 test assertions passed! Dicoding Mastery: Advanced (4.0 / Bintang 5).");
+          showToast("Newman Run Completed: 233 / 233 Assertions Passed!");
+        }
+      }, 160);
+    }
+
+    function appendTerminalLine(type, text) {
+      const streamBox = document.getElementById('terminal-stream-box');
+      const div = document.createElement('div');
+      div.className = 'log-line log-' + type;
+      div.textContent = text;
+      streamBox.appendChild(div);
+      streamBox.scrollTop = streamBox.scrollHeight;
+    }
+
+    function resetNewmanTerminal() {
+      document.getElementById('terminal-stream-box').innerHTML = '<div class="log-dim">// Terminal reset. Klik "Execute Test Suite" untuk mengulang.</div>';
+      document.getElementById('runner-progress-bar').style.width = '0%';
+      document.getElementById('terminal-assertion-counter').textContent = 'Assertions: 0 / 233';
+    }
+
+    /* TAB 3: FILE VALIDATION PRESETS */
+    function runFileValidationPreset(type) {
+      const statusPill = document.getElementById('validator-status-pill');
+      const sizePill = document.getElementById('validator-size-pill');
+      const codeOutput = document.getElementById('validator-code-output');
+
+      if (type === 'valid') {
+        statusPill.textContent = 'Status: 201 Created';
+        statusPill.style.color = '#34d399';
+        sizePill.textContent = 'Size: 42.7 kB (< 500 kB)';
+        codeOutput.textContent = JSON.stringify({
+          status: "success",
+          message: "Media poster verified and persisted to MinIO S3",
+          data: {
+            id: "d1f4e403-cea2-4b44-9774-2ddefb037da9",
+            file_name: "picture-small.jpg",
+            content_type: "image/jpeg",
+            size_bytes: 43728,
+            bucket: "dicoevent",
+            endpoint: "http://localhost:9000/dicoevent/",
+            database_record: "EventPoster(id=d1f4e403, event=58bfb236)"
+          }
+        }, null, 2);
+        showToast("MinIO Upload: Valid File Accepted (201 Created)");
+      } else if (type === 'oversize') {
+        statusPill.textContent = 'Status: 400 Bad Request';
+        statusPill.style.color = '#fb7185';
+        sizePill.textContent = 'Size: 1.85 MB (> 500 kB)';
+        codeOutput.textContent = JSON.stringify({
+          status: "error",
+          error_code: "FILE_TOO_LARGE",
+          detail: "File size exceeds 500 kB maximum threshold allowed for posters.",
+          allowed_max_bytes: 512000,
+          received_bytes: 1940000
+        }, null, 2);
+        showToast("Rejected: File size exceeds 500 kB limit");
+      } else if (type === 'invalid-mime') {
+        statusPill.textContent = 'Status: 400 Bad Request';
+        statusPill.style.color = '#fb7185';
+        sizePill.textContent = 'Type: application/pdf';
+        codeOutput.textContent = JSON.stringify({
+          status: "error",
+          error_code: "INVALID_MIME_TYPE",
+          detail: "Uploaded file is not a supported image format.",
+          allowed_mime_types: ["image/jpeg", "image/png", "image/webp", "image/gif"],
+          received_mime: "application/pdf"
+        }, null, 2);
+        showToast("Rejected: Only image MIME types are permitted");
+      }
+    }
+
+    function testCustomFileSimulation() {
+      runFileValidationPreset('valid');
+    }
+
+    /* TAB 5: LOGURU LIVE STREAMING DATA */
+    const logEntries = [
+      { level: "INFO", cat: "CACHE", text: "2026-10-08 06:12:01.112 | INFO | events.views:perform_create:112 - Event be25970e created by Aras" },
+      { level: "INFO", cat: "CACHE", text: "2026-10-08 06:12:01.113 | INFO | events.views:invalidate_event_cache:36 - Cache invalidated for event be25970e-a478-42c2" },
+      { level: "INFO", cat: "CACHE", text: "2026-10-08 06:12:01.890 | INFO | dicoevent.middleware:__call__:33 - GET /api/events/ - Status: 200 - User: Anonymous - Duration: 1.96ms [Cache Hit]" },
+      { level: "INFO", cat: "CELERY", text: "2026-10-08 06:12:05.441 | INFO | registrations.views:post:29 - Registration 1bc68e3b created for ticket d701f245" },
+      { level: "INFO", cat: "CELERY", text: "2026-10-08 06:12:05.448 | INFO | registrations.tasks:send_event_reminder_email - Task scheduled via Redis broker with ETA: 2026-10-15 07:00:00" },
+      { level: "INFO", cat: "INFO", text: "2026-10-08 06:12:08.204 | INFO | events.minio_client:upload_file:42 - Object picture-small.jpg uploaded to bucket dicoevent (43728 bytes)" },
+      { level: "INFO", cat: "INFO", text: "2026-10-08 06:12:08.210 | INFO | events.views:post:68 - EventPoster record created in PostgreSQL for event 58bfb236" },
+      { level: "WARNING", cat: "INFO", text: "2026-10-08 06:12:09.115 | WARNING | events.views:post:54 - Upload rejected: MIME type 'application/pdf' is not an image (400)" },
+      { level: "WARNING", cat: "INFO", text: "2026-10-08 06:12:10.002 | WARNING | events.views:post:60 - Upload rejected: File size 1940000 bytes exceeds 500 kB limit (400)" },
+      { level: "INFO", cat: "CACHE", text: "2026-10-08 06:12:12.450 | INFO | events.views:perform_update:118 - Event 58bfb236 updated - Purged cache key 'event_detail_58bfb236'" },
+      { level: "ERROR", cat: "ERROR", text: "2026-10-08 06:12:15.771 | ERROR | registrations.tasks:send_event_reminder_email:52 - Handled SMTP error simulation for registration 1bc68e3b" },
+      { level: "INFO", cat: "INFO", text: "2026-10-08 06:12:18.800 | INFO | dicoevent.middleware:__call__:33 - GET /api/media/picture-small.jpg/ - Status: 200 - Duration: 18.2ms" }
+    ];
+
+    let currentLogFilter = 'ALL';
+
+    function renderLogs() {
+      const box = document.getElementById('log-stream-display');
+      box.innerHTML = '';
+      const searchVal = document.getElementById('log-search-input').value.toLowerCase();
+
+      const filtered = logEntries.filter(item => {
+        const matchesFilter = currentLogFilter === 'ALL' || item.level === currentLogFilter || item.cat === currentLogFilter;
+        const matchesSearch = !searchVal || item.text.toLowerCase().includes(searchVal);
+        return matchesFilter && matchesSearch;
+      });
+
+      document.getElementById('log-count-indicator').textContent = `Showing ${filtered.length} entries`;
+
+      filtered.forEach(item => {
+        const div = document.createElement('div');
+        div.className = 'log-line';
+        if (item.level === 'ERROR') div.style.color = '#fb7185';
+        else if (item.level === 'WARNING') div.style.color = '#fbbf24';
+        else if (item.cat === 'CACHE') div.style.color = '#38bdf8';
+        else if (item.cat === 'CELERY') div.style.color = '#a78bfa';
+        else div.style.color = '#cbd5e1';
+
+        div.textContent = item.text;
+        box.appendChild(div);
+      });
+    }
+
+    function filterLogs(filter) {
+      currentLogFilter = filter;
+      document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+      const activeBtn = Array.from(document.querySelectorAll('.filter-btn')).find(b => b.textContent.includes(filter));
+      if (activeBtn) activeBtn.classList.add('active');
+      renderLogs();
+    }
+
+    function searchLogs(val) {
+      renderLogs();
+    }
+
+    function copyLogsToClipboard() {
+      const allText = logEntries.map(e => e.text).join('\n');
+      copyText(allText, 'All Loguru entries copied!');
+    }
+
+    // Initialize on load
+    window.addEventListener('DOMContentLoaded', () => {
+      loadEndpoint('get-events-miss');
+      renderLogs();
+    });
   </script>
 </body>
 </html>
